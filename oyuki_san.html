@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oyuki San - Comida Japonesa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;800&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root { --negro: #0b0b0b; 
+  --carbon: #181818; --rojo: #d9232b; 
+  --amarillo: #ffd21f; 
+  --texto: #f3efe6; 
+  --titulo: 'Shippori Mincho', Georgia, serif; 
+  --cuerpo: 'Zen Kaku Gothic New', Arial, sans-serif; 
+}
+
+html { background-color: var(--negro); }
+body { background-color: var(--negro); 
+  color: var(--texto); border: 
+  3px solid var(--amarillo); 
+  margin: 10px; padding: 20px; 
+  min-height: 85vh; 
+  font-family: var(--cuerpo); 
+  line-height: 1.5; 
+}
+
+.esquina-derecha { position: absolute; 
+  top: 30px; 
+  right: 35px; 
+  font-size: 11px; 
+  color: var(--amarillo); 
+}
+
+.btn-toggle-menu { position: fixed; 
+  top: 25px; 
+  left: 25px; 
+  z-index: 1001; 
+  font-size: 22px; 
+  padding: 6px 14px; 
+  text-align: center;
+}
+
+.menu-lateral { position: fixed; 
+  top: 0; 
+  left: -300px; 
+  width: 260px; 
+  height: 100%; 
+  background-color: var(--carbon); 
+  border-right: 3px solid var(--amarillo); 
+  box-shadow: 6px 0 0 var(--rojo); 
+  padding-top: 80px; 
+  transition: left 0.3s ease; 
+  z-index: 1000; 
+}
+
+.menu-lateral.abierto { left: 0; }
+.botones-menu { display: flex; 
+  flex-direction: column; 
+  gap: 12px; 
+  padding: 0 20px; 
+}
+
+button {
+        background-color: red;
+        color:yellow;
+        border: 3px solid yellow;
+        border-radius: 10px;
+        padding: 12px 18px; 
+        font-size:18px;
+        font-weight:bold;
+        text-align: left;
+
+        cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><text y="24" font-size="24">🍣</text></svg>'), pointer;
+    }
+
+
+button:hover { background-color: var(--amarillo); color: var(--negro); }
+
+button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--texto); 
+  outline-offset: 2px; 
+}
+
+h1 { font-family: var(--titulo); 
+  font-weight: 800; 
+  font-size: clamp(34px, 8vw, 64px); 
+  letter-spacing: 6px; 
+  color: var(--rojo); 
+  text-align: center; 
+  margin: 40px 0 6px; 
+}
+
+h1::after { content: ''; 
+display: block; 
+width: 90px; 
+height: 4px; 
+background-color: var(--amarillo); 
+margin: 10px auto 0;
+ }
+
+h2 { font-family: var(--titulo); 
+  color: var(--amarillo); 
+  text-align: center; 
+  font-size: 30px; 
+  letter-spacing: 2px; 
+}
+
+h3 { font-family: var(--titulo); 
+  color: var(--amarillo); 
+  border-bottom: 2px solid var(--rojo); 
+  padding-bottom: 6px; 
+  margin-top: 10px;
+ }
+
+.texto-bienvenida { font-size: 20px; 
+  max-width: 650px; 
+  margin: 15px auto; 
+  text-align: center; 
+}
+
+.imagen-local { width: 100%; 
+  max-width: 380px; 
+  height: auto; 
+  display: block; 
+  margin: 25px auto; 
+  border: 3px solid var(--amarillo); 
+  border-radius: 8px; 
+  box-shadow: 10px 10px 0 var(--rojo);
+ }
+
+.imagen-menu { width: 100%; 
+  max-height: 190px; 
+  object-fit: cover; 
+  border-radius: 8px; 
+  border: 2px solid var(--amarillo); 
+  margin-bottom: 12px;
+ }
+
+.modulo { display: none; max-width: 800px; margin: 0 auto; }
+
+#descripcion { background-image: linear-gradient(rgba(0,0,0,0.78), 
+  rgba(0,0,0,0.78)), url('conale.jpg'); 
+  background-size: cover; 
+  background-position: center; 
+  background-repeat: no-repeat; 
+  border-radius: 10px; 
+  padding: 25px; 
+  min-height: 50vh; 
+  border: 2px solid var(--rojo); 
+}
+
+.categoria { margin-bottom: 25px; 
+  background-color: var(--carbon); 
+  border: 2px solid var(--amarillo); 
+  border-left: 6px solid var(--rojo); 
+  border-radius: 10px; 
+  padding: 15px; 
+}
+
+ul { list-style: none; padding: 0; }
+
+li { padding: 8px 0; 
+  border-bottom: 1px dotted #555; 
+}
+
+.precio { color: var(--amarillo); 
+  font-weight: 700; 
+  float: right; 
+}
+
+.tarjeta { border: 2px solid var(--amarillo); 
+  background-color: var(--carbon); 
+  border-radius: 10px; 
+  padding: 15px; 
+  margin: 15px 0; 
+  text-align: center; 
+  font-size: 18px; 
+}
+
+input, textarea { width: 100%; 
+  box-sizing: border-box; 
+  padding: 10px; 
+  margin: 6px 0; 
+  border: 2px solid var(--rojo); 
+  border-radius: 6px; 
+  background-color: var(--negro); 
+  color: var(--texto); 
+  font-family: var(--cuerpo); 
+  font-size: 16px; 
+}
+
+a { color: #ff7b7b; }
+
+.volver { text-align: center; margin-top: 30px; }
+
+.volver button { margin: 5px; }
+
+.contenedor-tabla { overflow-x: auto; margin-top: 15px; }
+
+.tabla-horario { width: 100%; 
+  border-collapse: collapse; 
+  text-align: center; 
+  border: 2px solid var(--rojo); 
+}
+
+.tabla-horario th, .tabla-horario td { border: 1px solid var(--rojo); padding: 10px; }
+
+.tabla-horario th { background-color: var(--rojo); 
+  color: var(--amarillo); 
+  font-family: var(--titulo); 
+  letter-spacing: 2px; 
+}
+
+.tabla-horario td.dia { color: var(--amarillo); font-weight: 700; }
+
+#menu li { display: flex; 
+  flex-wrap: wrap; 
+  align-items: center; 
+  gap: 8px; 
+}
+
+#menu li .nombre-platillo { flex: 1 1 180px; }
+
+#menu li .precio { float: none; }
+
+.acciones-platillo { display: flex; 
+  align-items: center; 
+  gap: 6px; 
+}
+
+.btn-chico { padding: 6px 12px; 
+  font-size: 14px; 
+  text-align: center; 
+}
+
+.btn-carrito { position: fixed; 
+  bottom: 25px; 
+  right: 25px; 
+  z-index: 1001; 
+  font-size: 22px; 
+  padding: 10px 16px; 
+  border-radius: 30px; 
+  text-align: center; 
+  box-shadow: 4px 4px 0 var(--amarillo); 
+}
+
+.btn-carrito span { background-color: white; 
+  color: black; 
+  border-radius: 12px; 
+  padding: 2px 8px; 
+  font-size: 14px; 
+  margin-left: 6px; 
+}
+
+.fila-carrito { display: flex; 
+  flex-wrap: wrap; 
+  align-items: center; 
+  justify-content: space-between; 
+  gap: 10px; 
+  text-align: left; 
+}
+
+.info-carrito { display: flex; 
+  flex-direction: column; 
+  flex: 1 1 180px; 
+}
+
+.info-carrito small { color: #bbb; }
+.cantidad { min-width: 24px; text-align: center; font-weight: 700; }
+.subtotal { color: var(--amarillo); font-weight: 700; }
+.total-carrito { font-size: 22px; font-weight: 700; }
+.total-carrito span { color: var(--amarillo); }
+.aviso { position: fixed; 
+  bottom: 90px; 
+  left: 50%; 
+  transform: translateX(-50%); 
+  z-index: 1100; 
+  max-width: 80%; 
+  background-color: var(--amarillo); 
+  color: var(--negro); 
+  font-weight: 700; 
+  text-align: center; 
+  padding: 10px 16px; 
+  border-radius: 8px; 
+  opacity: 0; 
+  pointer-events: none; 
+  transition: opacity 0.3s ease; 
+}
+
+.aviso.visible { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+
+<body>
+
+<p class="esquina-derecha">proyecto escolar</p>
+
+<button class="btn-toggle-menu" onclick="alternarMenu()" id="btnMenu">≡</button>
+
+<div class="menu-lateral" id="menuLateral">
+  <div class="botones-menu">
+    <button onclick="mostrar('inicio')">🏠 Inicio</button>
+    <button onclick="mostrar('menu')">🍣 Menú</button>
+    <button onclick="mostrar('opiniones')">⭐ Opiniones</button>
+    <button onclick="mostrar('telefono')">📞 Teléfono</button>
+    <button onclick="mostrar('direccion')">📍 Dirección</button>
+    <button onclick="mostrar('valores')">📜 Valores</button>
+    <button onclick="mostrar('descripcion')">🥢 Descripción</button>
+    <button onclick="mostrar('horario')">⏱️ Horario</button>
+  </div>
+</div>
+
+<h1>OYUKI SAN</h1>
+
+<div id="inicio" class="modulo" style="display:block;">
+  <p class="texto-bienvenida">
+    ¡Bienvenidos a Oyuki San! Te invitamos a descubrir la auténtica gastronomía japonesa.
+    Ofrecemos ingredientes frescos, sabores tradicionales y una experiencia culinaria única en cada platillo.
+  </p>
+  <img src="oyuki_san.jpg" alt="Logo e interior Oyuki San" class="imagen-local">
+</div>
+
+<div id="menu" class="modulo">
+  <h2>MENÚ</h2>
+
+  <div class="categoria">
+    <img src="kushiages.jpg" alt="Kushiages" class="imagen-menu">
+    <h3>Kushiages (Empanizados con Tempura y Panko)</h3>
+    <ul>
+      <li>Plátano (8 pzas) <span class="precio">$79</span></li>
+      <li>Pollo (6 pzas) <span class="precio">$89</span></li>
+      <li>Queso (6 pzas) <span class="precio">$97</span></li>
+      <li>Surimi (6 pzas) <span class="precio">$85</span></li>
+      <li>Camarón con queso crema o manchego (3 pzas) <span class="precio">$85</span></li>
+    </ul>
+  </div>
+
+  <div class="categoria">
+    <img src="tempura.jpg" alt="Capeados Tempura" class="imagen-menu">
+    <h3>Capeados en Pasta Tempura</h3>
+    <ul>
+      <li>Verduras <span class="precio">$89</span></li>
+      <li>Eby Yasay <span class="precio">$109</span></li>
+      <li>Tempura Eby <span class="precio">$99</span></li>
+    </ul>
+  </div>
+
+  <div class="categoria">
+    <img src="yakimeshi.jpg" alt="Yakimeshi" class="imagen-menu">
+    <h3>Yakimeshi (Arroz frito con verduras y huevo)</h3>
+    <ul>
+      <li>Pollo <span class="precio">$79</span></li>
+      <li>Arrachera <span class="precio">$85</span></li>
+      <li>Camarón <span class="precio">$89</span></li>
+      <li>Mixto <span class="precio">$90</span></li>
+      <li>Mariscos <span class="precio">$119</span></li>
+      <li>Chilerita de pasta Tampico <span class="precio">$25</span></li>
+      <li>Gohan con verduras <span class="precio">$50</span></li>
+      <li>Gohan con verduras y pasta Tampico <span class="precio">$80</span></li>
+    </ul>
+  </div>
+
+  <div class="categoria">
+    <img src="teppanyaki.jpg" alt="Teppanyaki" class="imagen-menu">
+    <h3>Teppanyaki (Media porción / Completa)</h3>
+    <ul>
+      <li>Pollo <span class="precio">$80 / $130</span></li>
+      <li>Arrachera <span class="precio">$85 / $139</span></li>
+      <li>Camarón <span class="precio">$89 / $140</span></li>
+      <li>Mixto <span class="precio">$89 / $138</span></li>
+      <li>Mariscos <span class="precio">$90 / $149</span></li>
+      <li>Verduras <span class="precio">$60 / $85</span></li>
+    </ul>
+  </div>
+
+  <div class="categoria">
+    <img src="sushi_exotico.jpg" alt="Sushi Exótico" class="imagen-menu">
+    <h3>Sushi Exótico</h3>
+    <ul>
+      <li>Bana Maki <span class="precio">$95</span></li>
+      <li>Avocado Maki <span class="precio">$98</span></li>
+      <li>Mango Maki <span class="precio">$107</span></li>
+      <li>Kiuri Maki <span class="precio">$99</span></li>
+      <li>Fruti Maki <span class="precio">$110</span></li>
+      <li>Dragón Maki <span class="precio">$110</span></li>
+      <li>Koko Maki <span class="precio">$115</span></li>
+    </ul>
+  </div>
+
+  <div class="categoria">
+    <img src="sushi_empanizado.jpg" alt="Sushi Empanizado" class="imagen-menu">
+    <h3>Sushi Empanizado</h3>
+    <ul>
+      <li>Uki Maki <span class="precio">$109</span></li>
+      <li>Uki Fray <span class="precio">$99</span></li>
+      <li>Chipofray <span class="precio">$99</span></li>
+      <li>Hori Maky <span class="precio">$99</span></li>
+      <li>Eby Roll <span class="precio">$113</span></li>
+      <li>Gou Maki <span class="precio">$99</span></li>
+      <li>Ika Maki <span class="precio">$109</span></li>
+      <li>Yuki Maki <span class="precio">$119</span></li>
+      <li>Kany Fray <span class="precio">$99</span></li>
+      <li>Guiller Maky <span class="precio">$109</span></li>
+      <li>Maky Tory <span class="precio">$99</span></li>
+    </ul>
+  </div>
+
+  <div class="categoria">
+    <img src="sushi_clasico.jpg" alt="Sushi Clásico" class="imagen-menu">
+    <h3>Sushi Clásico y Californias</h3>
+    <ul>
+      <li>Ura Cany (surimi) <span class="precio">$79</span></li>
+      <li>Ura Eby (camarón) <span class="precio">$85</span></li>
+      <li>Ura Sake (salmón) <span class="precio">$89</span></li>
+      <li>Tampico (sin queso) <span class="precio">$88</span></li>
+      <li>Hawaiaki <span class="precio">$79</span></li>
+      <li>California Surimi <span class="precio">$82</span></li>
+      <li>California Camarón <span class="precio">$88</span></li>
+      <li>California Salmón <span class="precio">$89</span></li>
+      <li>California Mixto <span class="precio">$99</span></li>
+    </ul>
+  </div>
+
+  <div class="categoria">
+    <img src="temakis.jpg" alt="Temakis" class="imagen-menu">
+    <h3>Temakis (Conos)</h3>
+    <ul>
+      <li>Salmón fresco <span class="precio">$82</span></li>
+      <li>Camarón dulce <span class="precio">$87</span></li>
+      <li>Masago <span class="precio">$90</span></li>
+      <li>Arrachera <span class="precio">$87</span></li>
+      <li>Pasta Tampico sin queso <span class="precio">$79</span></li>
+    </ul>
+  </div>
+
+  <div class="categoria">
+    <img src="sopas.jpg" alt="Sopas y Ensaladas" class="imagen-menu">
+    <h3>Sopas Udon y Ensaladas</h3>
+    <ul>
+      <li>Udon espinaca <span class="precio">$69</span></li>
+      <li>Udon pollo <span class="precio">$75</span></li>
+      <li>Udon camarón <span class="precio">$79</span></li>
+      <li>Kiuri San (ensalada de pepino) <span class="precio">$79</span></li>
+    </ul>
+  </div>
+
+  <div class="categoria">
+    <img src="bebidas.jpg" alt="Bebidas" class="imagen-menu">
+    <h3>Bebidas</h3>
+    <ul>
+      <li>Agua natural <span class="precio">$19</span></li>
+      <li>Agua sabor jamaica 500 ml <span class="precio">$20</span></li>
+      <li>Limonada <span class="precio">$29</span></li>
+      <li>Limonada blue <span class="precio">$35</span></li>
+      <li>Naranjada <span class="precio">$29</span></li>
+      <li>Calpiz <span class="precio">$35</span></li>
+      <li>Refresco 500 ml <span class="precio">$25</span></li>
+      <li>Refresco 350 ml <span class="precio">$20</span></li>
+    </ul>
+  </div>
+
+  <div class="categoria">
+    <img src="postres.jpg" alt="Postres y Complementos" class="imagen-menu">
+    <h3>Complementos y Postres</h3>
+    <ul>
+      <li>5 aros de cebolla capeados tempura <span class="precio">$75</span></li>
+      <li>5 nuggets de pollo <span class="precio">$69</span></li>
+      <li>Tempura helado chico <span class="precio">$49</span></li>
+      <li>Tempura helado grande <span class="precio">$75</span></li>
+      <li>Kotta-Bana Fray <span class="precio">$79</span></li>
+      <li>Camelado <span class="precio">$45</span></li>
+    </ul>
+  </div>
+
+  <div class="volver"><button onclick="mostrar('inicio')">≡ Volver al inicio</button></div>
+</div>
+
+<div id="opiniones" class="modulo">
+  <h2>OPINIONES</h2>
+  <p style="text-align:center;">¡Cuéntanos qué te pareció tu experiencia en Oyuki San!</p>
+
+  <div class="tarjeta" style="text-align:left;">
+    <input type="text" id="nombre" placeholder="Tu nombre">
+    <textarea id="comentario" rows="4" placeholder="Escribe tu opinión"></textarea>
+    <div style="text-align:center; margin-top:10px;">
+      <button onclick="agregarOpinion()">Enviar opinión</button>
+    </div>
+  </div>
+
+  <div id="lista-opiniones"></div>
+  <div class="volver"><button onclick="mostrar('inicio')">≡ Volver al inicio</button></div>
+</div>
+
+<div id="telefono" class="modulo">
+  <h2>TELÉFONO</h2>
+  <div class="tarjeta">📞 <a href="tel:2229030664">222 903 0664</a></div>
+  <div class="tarjeta">📞 <a href="tel:2227156810">222 715 6810</a></div>
+  <div class="volver"><button onclick="mostrar('inicio')">≡ Volver al inicio</button></div>
+</div>
+
+<div id="direccion" class="modulo">
+  <h2>DIRECCIÓN</h2>
+  <div class="tarjeta">
+    📍 C. de Los Pinos 1132, Amp Lomas de Castillotla,<br>
+    72490 Heroica Puebla de Zaragoza, Pue.
+  </div>
+  <p style="text-align:center;">
+    <a href="https://www.google.com/maps/search/?api=1&query=C.+de+Los+Pinos+1132,+Amp+Lomas+de+Castillotla,+72490+Puebla" target="_blank">Ver en Google Maps</a>
+  </p>
+  <div class="volver"><button onclick="mostrar('inicio')">≡ Volver al inicio</button></div>
+</div>
+
+<div id="valores" class="modulo">
+  <h2>VALORES CONALEP</h2>
+  <h3>Valores Institucionales</h3>
+  <ul>
+    <li>Respeto a la persona</li>
+    <li>Compromiso con la Sociedad</li>
+    <li>Responsabilidad</li>
+    <li>Comunicación</li>
+    <li>Cooperación</li>
+    <li>Mentalidad Positiva</li>
+    <li>Calidad</li>
+  </ul>
+
+<h3>Con orden</h3>
+        <ol type="1">
+            <li>Respeto a la Persona</li>
+            <li>Compromiso con la Sociedad</li>
+            <li>Responsabilidad</li>
+            <li>Comunicación</li>
+            <li>Coperación</li>
+            <li>Mentalidad Positiva</li>
+            <li>Calidad</li>
+            </ol>
+
+             <h3>Con orden insano</h3>
+        <ol type="i">
+            <li>Respeto a la Persona</li>
+            <li>Compromiso con la Sociedad</li>
+            <li>Responsabilidad</li>
+            <li>Comunicación</li>
+            <li>Coperación</li>
+            <li>Mentalidad Positiva</li>
+            <li>Calidad</li>
+            </ol>
+    </div>
+
+  <div class="volver"><button onclick="mostrar('inicio')">≡ Volver al inicio</button></div>
+</div>
+
+<div id="descripcion" class="modulo">
+  <h2>DESCRIPCIÓN DEL PROYECTO</h2>
+
+  <p style="text-align:center; font-weight:bold; color:var(--amarillo); font-size:18px; margin-top:15px;">
+    CONALEP PUEBLA III
+  </p>
+  <p style="text-align:center; color:#ff7b7b; font-weight:bold; font-size:16px;">
+    Carrera: Ciencias de Datos e Inteligencia Artificial (CDIA - 303)
+  </p>
+
+  <div style="line-height: 1.6; text-align: justify; margin: 20px 0; font-size: 16px;">
+    <p>
+      Esta página web fue desarrollada como parte de un proyecto escolar integrado para aplicar 
+      conocimientos prácticos en diseño, maquetación y desarrollo web interactivo. El objetivo 
+      principal es ofrecer una plataforma digital atractiva, funcional e intuitiva para dar a 
+      conocer el restaurante de comida japonesa <strong>Oyuki San</strong>, facilitando la 
+      consulta de su menú, precios, ubicación, promociones y horarios de atención al público.
+    </p>
+  </div>
+
+  <h3 style="text-align:center; margin-top:25px;">EQUIPO DE DESARROLLO</h3>
+  <ul style="list-style:none; padding:0; text-align:center; font-size:17px; line-height:2;">
+    <li> SANTIAGO GALINDO VILLANUEVA</li>
+    <li> EDGAR APARICIO HERNÁNDEZ</li>
+    <li> FRANCISCO OBED REYES CANDIA</li>
+    <li> DIEGO JIMÉNEZ LÓPEZ</li>
+    <li> KAREN MAITE GUZMÁN ROSAS</li>
+  </ul>
+
+  <div class="volver"><button onclick="mostrar('inicio')">≡ Volver al inicio</button></div>
+</div>
+
+<div id="horario" class="modulo">
+  <h2>HORARIO DE ATENCIÓN</h2>
+  <p style="text-align:center; color:var(--amarillo); margin-bottom:15px;">Servicio de Lunes a Domingo</p>
+
+  <div class="contenedor-tabla">
+    <table class="tabla-horario">
+      <thead>
+        <tr><th colspan="2">HORARIO SEMANAL</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="dia">LUNES</td><td class="hora">1:30 PM - 9:00 PM</td></tr>
+        <tr><td class="dia">MARTES</td><td class="hora">1:30 PM - 9:00 PM</td></tr>
+        <tr><td class="dia">MIÉRCOLES</td><td class="hora">1:30 PM - 9:00 PM</td></tr>
+        <tr><td class="dia">JUEVES</td><td class="hora">1:30 PM - 9:00 PM</td></tr>
+        <tr><td class="dia">VIERNES</td><td class="hora">1:30 PM - 9:00 PM</td></tr>
+        <tr><td class="dia">SÁBADO</td><td class="hora">1:30 PM - 9:00 PM</td></tr>
+        <tr><td class="dia">DOMINGO</td><td class="hora">1:30 PM - 9:00 PM</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="volver"><button onclick="mostrar('inicio')">≡ Volver al inicio</button></div>
+</div>
+
+<p style="text-align:center; margin-top:30px;">
+  <a href="https://www.conalep.edu.mx/inicio" target="_blank">CONALEP</a>
+</p>
+
+<script>
+function alternarMenu() {
+  var menu = document.getElementById('menuLateral');
+  menu.classList.toggle('abierto');
+}
+
+function mostrar(idModulo) {
+  var modulos = document.querySelectorAll('.modulo');
+  for (var i = 0; i < modulos.length; i++) {
+    modulos[i].style.display = 'none';
+  }
+  document.getElementById(idModulo).style.display = 'block';
+  window.scrollTo(0, 0);
+
+  var menu = document.getElementById('menuLateral');
+  menu.classList.remove('abierto');
+}
+
+function agregarOpinion() {
+  var nombre = document.getElementById('nombre').value.trim();
+  var comentario = document.getElementById('comentario').value.trim();
+  if (nombre === '' || comentario === '') {
+    alert('Por favor escribe tu nombre y tu opinión.');
+    return;
+  }
+  var caja = document.createElement('div');
+  caja.className = 'tarjeta';
+  var titulo = document.createElement('strong');
+  titulo.style.color = 'yellow';
+  titulo.textContent = nombre;
+  var texto = document.createElement('p');
+  texto.textContent = comentario;
+  caja.appendChild(titulo);
+  caja.appendChild(texto);
+  document.getElementById('lista-opiniones').prepend(caja);
+  document.getElementById('nombre').value = '';
+  document.getElementById('comentario').value = '';
+}
+
+var TELEFONO_WHATSAPP = '522229030664';
+var carrito = [];
+var temporizadorAviso;
+
+function crearBoton(texto, accion) {
+  var boton = document.createElement('button');
+  boton.className = 'btn-chico';
+  boton.textContent = texto;
+  boton.onclick = accion;
+  return boton;
+}
+
+function prepararMenu() {
+  var items = document.querySelectorAll('#menu .categoria li');
+  for (var i = 0; i < items.length; i++) {
+    var li = items[i];
+    var categoria = li.closest('.categoria').querySelector('h3').textContent.split(' (')[0];
+    var precios = li.querySelector('.precio').textContent.replace(/\$/g, '').split('/');
+    var nombre = li.firstChild.textContent.trim();
+
+    var etiqueta = document.createElement('span');
+    etiqueta.className = 'nombre-platillo';
+    etiqueta.textContent = nombre;
+    li.replaceChild(etiqueta, li.firstChild);
+
+    var acciones = document.createElement('div');
+    acciones.className = 'acciones-platillo';
+    if (precios.length === 2) {
+      acciones.appendChild(crearBotonAgregar(categoria, nombre + ' (media)', parseInt(precios[0], 10), 'Media'));
+      acciones.appendChild(crearBotonAgregar(categoria, nombre + ' (completa)', parseInt(precios[1], 10), 'Completa'));
+    } else {
+      acciones.appendChild(crearBotonAgregar(categoria, nombre, parseInt(precios[0], 10), '+ Agregar'));
+    }
+    li.appendChild(acciones);
+  }
+}
+
+function crearBotonAgregar(categoria, nombre, precio, texto) {
+  return crearBoton(texto, function () {
+    agregarAlCarrito(categoria, nombre, precio);
+  });
+}
+
+function crearInterfazCarrito() {
+  var lateral = document.querySelector('.botones-menu');
+  var botonLateral = document.createElement('button');
+  botonLateral.textContent = '🛒 Carrito';
+  botonLateral.onclick = function () { mostrar('carrito'); };
+  lateral.insertBefore(botonLateral, lateral.children[2]);
+
+  var flotante = document.createElement('button');
+  flotante.className = 'btn-carrito';
+  flotante.innerHTML = '🛒<span id="contador-carrito">0</span>';
+  flotante.onclick = function () { mostrar('carrito'); };
+  document.body.appendChild(flotante);
+
+  var aviso = document.createElement('div');
+  aviso.className = 'aviso';
+  aviso.id = 'aviso';
+  document.body.appendChild(aviso);
+
+  var modulo = document.createElement('div');
+  modulo.id = 'carrito';
+  modulo.className = 'modulo';
+  modulo.innerHTML = `
+    <h2>MI CARRITO</h2>
+    <p id="carrito-vacio" style="text-align:center;">Tu carrito está vacío. Agrega platillos desde el menú.</p>
+    <div id="lista-carrito"></div>
+    <div id="pedido-datos" style="display:none;">
+      <div class="tarjeta total-carrito">Total: <span id="total-carrito">$0</span></div>
+      <div class="tarjeta" style="text-align:left;">
+        <input type="text" id="cliente-nombre" placeholder="Tu nombre">
+        <textarea id="cliente-nota" rows="3" placeholder="Notas o dirección de entrega (opcional)"></textarea>
+      </div>
+      <div class="volver">
+        <button onclick="enviarPedido()">📲 Enviar pedido por WhatsApp</button>
+        <button onclick="vaciarCarrito()">🗑️ Vaciar carrito</button>
+      </div>
+    </div>
+    <div class="volver"><button onclick="mostrar('menu')">🍣 Seguir pidiendo</button></div>
+  `;
+  document.getElementById('menu').insertAdjacentElement('afterend', modulo);
+}
+
+function agregarAlCarrito(categoria, nombre, precio) {
+  var id = categoria + '|' + nombre;
+  var existente = carrito.find(function (p) { return p.id === id; });
+  if (existente) {
+    existente.cantidad++;
+  } else {
+    carrito.push({ id: id, categoria: categoria, nombre: nombre, precio: precio, cantidad: 1 });
+  }
+  dibujarCarrito();
+  avisar(nombre + ' agregado al carrito');
+}
+
+function cambiarCantidad(id, cambio) {
+  var producto = carrito.find(function (p) { return p.id === id; });
+  producto.cantidad += cambio;
+  if (producto.cantidad <= 0) {
+    quitarDelCarrito(id);
+    return;
+  }
+  dibujarCarrito();
+}
+
+function quitarDelCarrito(id) {
+  carrito = carrito.filter(function (p) { return p.id !== id; });
+  dibujarCarrito();
+}
+
+function vaciarCarrito() {
+  if (confirm('¿Quieres vaciar el carrito?')) {
+    carrito = [];
+    dibujarCarrito();
+  }
+}
+
+function calcularTotal() {
+  return carrito.reduce(function (suma, p) { return suma + p.precio * p.cantidad; }, 0);
+}
+
+function dibujarCarrito() {
+  var lista = document.getElementById('lista-carrito');
+  lista.textContent = '';
+  var unidades = 0;
+
+  carrito.forEach(function (p) {
+    unidades += p.cantidad;
+
+    var fila = document.createElement('div');
+    fila.className = 'tarjeta fila-carrito';
+
+    var info = document.createElement('div');
+    info.className = 'info-carrito';
+    var nombre = document.createElement('strong');
+    nombre.textContent = p.nombre;
+    var detalle = document.createElement('small');
+    detalle.textContent = p.categoria + ' - $' + p.precio + ' c/u';
+    info.appendChild(nombre);
+    info.appendChild(detalle);
+
+    var controles = document.createElement('div');
+    controles.className = 'acciones-platillo';
+    var cantidad = document.createElement('span');
+    cantidad.className = 'cantidad';
+    cantidad.textContent = p.cantidad;
+    controles.appendChild(crearBoton('−', function () { cambiarCantidad(p.id, -1); }));
+    controles.appendChild(cantidad);
+    controles.appendChild(crearBoton('+', function () { cambiarCantidad(p.id, 1); }));
+    controles.appendChild(crearBoton('🗑️', function () { quitarDelCarrito(p.id); }));
+
+    var subtotal = document.createElement('span');
+    subtotal.className = 'subtotal';
+    subtotal.textContent = '$' + (p.precio * p.cantidad);
+
+    fila.appendChild(info);
+    fila.appendChild(controles);
+    fila.appendChild(subtotal);
+    lista.appendChild(fila);
+  });
+
+  var vacio = carrito.length === 0;
+  document.getElementById('carrito-vacio').style.display = vacio ? 'block' : 'none';
+  document.getElementById('pedido-datos').style.display = vacio ? 'none' : 'block';
+  document.getElementById('total-carrito').textContent = '$' + calcularTotal();
+  document.getElementById('contador-carrito').textContent = unidades;
+}
+
+function avisar(texto) {
+  var aviso = document.getElementById('aviso');
+  aviso.textContent = texto;
+  aviso.classList.add('visible');
+  clearTimeout(temporizadorAviso);
+  temporizadorAviso = setTimeout(function () { aviso.classList.remove('visible'); }, 1500);
+}
+
+function enviarPedido() {
+  var nombre = document.getElementById('cliente-nombre').value.trim();
+  var nota = document.getElementById('cliente-nota').value.trim();
+  if (nombre === '') {
+    alert('Por favor escribe tu nombre para el pedido.');
+    return;
+  }
+  var lineas = ['Hola, quiero hacer un pedido en Oyuki San.', 'Nombre: ' + nombre, ''];
+  carrito.forEach(function (p) {
+    lineas.push(p.cantidad + ' x ' + p.nombre + ' (' + p.categoria + ') - $' + (p.precio * p.cantidad));
+  });
+  lineas.push('', 'Total: $' + calcularTotal());
+  if (nota !== '') {
+    lineas.push('Notas: ' + nota);
+  }
+  var url = 'https://wa.me/' + TELEFONO_WHATSAPP + '?text=' + encodeURIComponent(lineas.join('\n'));
+  window.open(url, '_blank');
+}
+
+crearInterfazCarrito();
+prepararMenu();
+dibujarCarrito();
+
+</script>
+</body>
+</html>
